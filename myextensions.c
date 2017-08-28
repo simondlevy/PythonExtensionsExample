@@ -161,6 +161,7 @@ static PyTypeObject myextensions_MyCircleType =
 // myextensions module ------------------------------------------------------------
 
 
+// https://stackoverflow.com/questions/22458298/extending-python-with-c-pass-a-list-to-pyarg-parsetuple
 static PyObject * mysum(PyObject *self, PyObject *args)
 {   
     PyObject *pList = NULL;
@@ -170,22 +171,24 @@ static PyObject * mysum(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    /*
-    Py_ssize_t n;
-    int i;
-    PyObject *pItem;
-    n = PyList_Size(pList);
-    for (i=0; i<n; i++) {
-        pItem = PyList_GetItem(pList, i);
-        if(!PyInt_Check(pItem)) {
+    int sum = 0;
+
+    Py_ssize_t n = PyList_Size(pList);
+
+    for (int i=0; i<n; i++) {
+
+        PyObject * pItem = PyList_GetItem(pList, i);
+
+        if(!PyLong_Check(pItem)) {
             PyErr_SetString(PyExc_TypeError, "list items must be integers.");
             return NULL;
         }
+
+        sum += PyLong_AsLong(pItem);
     }
-    */
 
     // Run C version and return Python integer
-    return PyLong_FromLong(100);
+    return PyLong_FromLong(sum);
 }
 
 static PyMethodDef module_methods[] = 

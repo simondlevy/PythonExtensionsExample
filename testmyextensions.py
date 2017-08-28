@@ -30,4 +30,6 @@ circle.move(2, 4)
 
 print(circle)
 
-print(mysum([1,2,3]))
+lyst = [1,2,3]
+
+print('Sum of ' + str(lyst) + ' = ' + str(mysum(lyst)))
