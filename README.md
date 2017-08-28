@@ -15,4 +15,4 @@ or Linux terminal window:
 
 This command will create a new module <b>myextensions</b> in your Python libraries folder.
 
-Once the install completes, you can test it out by running the script <b>testmyextensions.py</b>
+Once the install completes, you can test it out by running the script <b>testmyextensions.py</b>.
