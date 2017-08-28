@@ -5,7 +5,7 @@ setup.py - Python distutils setup file for PythonExtensionsExample
 
 Copyright (C) 2017 Simon D. Levy
 
-This program is part of PythonExtensions Example
+This program is part of PythonExtensionsExample
 
 PythonExtensionsExample is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as 
@@ -23,10 +23,7 @@ along with this code.  If not, see <http://www.gnu.org/licenses/>.
 
 # Support streaming SIMD extensions
 
-from platform import machine
-
-OPT_FLAGS  = []
-SIMD_FLAGS = []
+CFLAGS  = []
 
 SOURCES = [
     'myextensions.c', 
@@ -36,7 +33,7 @@ from distutils.core import setup, Extension
 
 module = Extension('myextensions', 
     sources = SOURCES, 
-    extra_compile_args = SIMD_FLAGS + OPT_FLAGS
+    extra_compile_args = CFLAGS
     )
 
 
