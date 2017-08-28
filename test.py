@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from myextensions import MyClass
+from myextensions import MyCircle
 
-obj = MyClass(123)
+circle = MyCircle(4.5, 3.0, 1.2)
 
-print(obj)
+print(circle)

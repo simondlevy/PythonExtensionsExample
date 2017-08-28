@@ -19,91 +19,98 @@
 
 #include <Python.h>
 #include <structmember.h>
-
+#include <math.h>
 #include "pyextension_utils.h"
 
-// MyClass class ------------------------------------------------------------
+// MyCircle class ------------------------------------------------------------
 
 typedef struct 
 {
     PyObject_HEAD
 
-    int value;
+    double x;
+    double y;
+    double r;
 
-} MyClass;
+} MyCircle;
 
 
-static void MyClass_dealloc(MyClass* self)
+static void MyCircle_dealloc(MyCircle* self)
 {        
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject * MyClass_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject * MyCircle_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {    
-    MyClass *self;
+    MyCircle *self;
 
-    self = (MyClass *)type->tp_alloc(type, 0);
+    self = (MyCircle *)type->tp_alloc(type, 0);
 
     return (PyObject *)self;
 }
 
-static int MyClass_init(MyClass *self, PyObject *args, PyObject *kwds)
+static int MyCircle_init(MyCircle *self, PyObject *args, PyObject *kwds)
 {                 
-    static char* argnames[] = {"value", NULL};
+    static char* argnames[] = {"x", "y", "r", NULL};
 
-    if(!PyArg_ParseTupleAndKeywords(args, kwds,"i", argnames, &self->value)) {
-        return error_on_raise_argument_exception("MyClass");
+    if(!PyArg_ParseTupleAndKeywords(args, kwds,"ddd", argnames, 
+                &self->x, &self->y, &self->r)) {
+        return error_on_raise_argument_exception("MyCircle");
     }
 
     return 0;
 }
 
 
-static PyObject * MyClass_str(MyClass *self)
+static PyObject * MyCircle_str(MyCircle *self)
 {        
     char str[200];
-    sprintf(str, "value = %d", self->value);
+    sprintf(str, "Circle at (%2.2f,%2.2f) with radius %2.2f", self->x, self->y, self->r);
 
     return  PyUnicode_FromString(str);
 }
 
 
-static PyObject * MyClass_set(MyClass *self, PyObject *args, PyObject *kwds)
+static PyObject * MyCircle_move(MyCircle *self, PyObject *args, PyObject *kwds)
 {
-    static char* argnames[] = {"value", NULL};
+    static char* argnames[] = {"dx", "dy", NULL};
+    double dx = 0, dy = 0;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds,"i", argnames, self->value)) {
-        return null_on_raise_argument_exception("MyClass", "update");
+    if (!PyArg_ParseTupleAndKeywords(args, kwds,"dd", argnames, dx, dy)) {
+        return null_on_raise_argument_exception("MyCircle", "move");
     }
+
+    self->x += dx;
+    self->y += dy;
 
     Py_RETURN_NONE;
 }
 
 
-static PyObject * MyClass_get(MyClass *self, PyObject *args, PyObject *kwds)
+static PyObject * MyCircle_area(MyCircle *self, PyObject *args, PyObject *kwds)
 {
-    return PyLong_FromLong(self->value);
+    return PyFloat_FromDouble(M_PI*self->r*self->r);
 }
 
 
-static PyMethodDef MyClass_methods[] = 
+static PyMethodDef MyCircle_methods[] = 
 {
-    {"set", (PyCFunction)MyClass_set, METH_VARARGS | METH_KEYWORDS, 
-     "MyClass.set(value) changes value.\n"\
+    {"move", (PyCFunction)MyCircle_move, METH_VARARGS | METH_KEYWORDS, 
+     "MyCircle.move(dx,dy) changes position.\n"\
     },
-    {"get", (PyCFunction)MyClass_get, METH_VARARGS | METH_KEYWORDS, 
-     "MyClass.get() returns value.\n"\
+    {"area", (PyCFunction)MyCircle_area, METH_VARARGS | METH_KEYWORDS, 
+     "MyCircle.area() returns area.\n"\
     },
     {NULL}  // Sentinel 
 };
 
 #define TP_DOC_SCAN \
 "An example class.\n" \
-"MyClass.__init__(value)\n"\
-"Creates a MyClass object with specified value"
+"MyCircle.__init__(value)\n"\
+"Creates a MyCircle object with specified value"
 
 
-static PyTypeObject myextensions_MyClassType = 
+static PyTypeObject myextensions_MyCircleType = 
 {
 #if PY_MAJOR_VERSION < 3
     PyObject_HEAD_INIT(NULL)
@@ -111,21 +118,21 @@ static PyTypeObject myextensions_MyClassType =
 #else
     PyVarObject_HEAD_INIT(NULL, 0)
 #endif
-    "myextensions.MyClass",                      // tp_name
-    sizeof(MyClass),                             // tp_basicsize
+    "myextensions.MyCircle",                      // tp_name
+    sizeof(MyCircle),                             // tp_basicsize
     0,                                          // tp_itemsize
-    (destructor)MyClass_dealloc,                 // tp_dealloc
+    (destructor)MyCircle_dealloc,                 // tp_dealloc
     0,                                          // tp_print
     0,                                          // tp_getattr
     0,                                          // tp_setattr
     0,                                          // tp_compare
-    (reprfunc)MyClass_str,                       // tp_repr
+    (reprfunc)MyCircle_str,                       // tp_repr
     0,                                          // tp_as_number
     0,                                          // tp_as_sequence
     0,                                          // tp_as_positionping
     0,                                          // tp_hash 
     0,                                          // tp_call
-    (reprfunc)MyClass_str,                       // tp_str
+    (reprfunc)MyCircle_str,                       // tp_str
     0,                                          // tp_getattro
     0,                                          // tp_setattro
     0,                                          // tp_as_buffer
@@ -137,7 +144,7 @@ static PyTypeObject myextensions_MyClassType =
     0,                                          // tp_weaklistoffset 
     0,                                          // tp_iter 
     0,                                          // tp_iternext 
-    MyClass_methods,                         	// tp_methods 
+    MyCircle_methods,                         	// tp_methods 
     0,                         					// tp_members 
     0,                                          // tp_getset 
     0,                                          // tp_base 
@@ -145,9 +152,9 @@ static PyTypeObject myextensions_MyClassType =
     0,                                          // tp_descr_get 
     0,                                          // tp_descr_set 
     0,                                          // tp_dictoffset 
-    (initproc)MyClass_init,                      // tp_init 
+    (initproc)MyCircle_init,                      // tp_init 
     0,                                          // tp_alloc 
-    MyClass_new,                                 // tp_new 
+    MyCircle_new,                                 // tp_new 
 };
 
 
@@ -155,19 +162,19 @@ static PyTypeObject myextensions_MyClassType =
 // myextensions module ------------------------------------------------------------
 
 
-static PyObject * distance(PyObject *self, PyObject *args)
+static PyObject * mysum(PyObject *self, PyObject *args)
 {   
-    MyClass * py_scan = NULL;
+    MyCircle * py_scan = NULL;
 
     // Extract Python objects for map, scan, and position
     if (!PyArg_ParseTuple(args, "O", &py_scan))
     {        
-        return null_on_raise_argument_exception("breezyslam", "distance");
+        return null_on_raise_argument_exception("breezyslam", "mysum");
     }
 
     // Check object types
-    if ( error_on_check_argument_type((PyObject *)py_scan, &myextensions_MyClassType, 1,
-                "myextensions.MyClass", "myextensions", "distance")) {
+    if ( error_on_check_argument_type((PyObject *)py_scan, &myextensions_MyCircleType, 1,
+                "myextensions.MyCircle", "myextensions", "mysum")) {
 
         return NULL;
     }
@@ -178,23 +185,21 @@ static PyObject * distance(PyObject *self, PyObject *args)
 
 static PyMethodDef module_methods[] = 
 {
-    {"distance", distance, METH_VARARGS,
-        "distance(scan)\n"
-            "Computes distance between a scan and map, given hypothetical position, to support particle filtering.\n"\
-            "Returns -1 for infinity.\n"\
-            "scan is a breezyslam.components.MyClass object\n"\
+    {"mysum", mysum, METH_VARARGS,
+     "mysum(lyst)\n"\
+     "Returns sum of numbers in list lyst."
     },
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 static void add_classes(PyObject * module)
 {
-    add_class(module, &myextensions_MyClassType, "MyClass");
+    add_class(module, &myextensions_MyCircleType, "MyCircle");
 }
 
 static int types_are_ready(void)
 {
-    return type_is_ready(&myextensions_MyClassType);
+    return type_is_ready(&myextensions_MyCircleType);
 }
 
 #if PY_MAJOR_VERSION < 3
