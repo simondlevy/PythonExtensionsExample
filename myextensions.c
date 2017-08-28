@@ -163,20 +163,26 @@ static PyTypeObject myextensions_MyCircleType =
 
 static PyObject * mysum(PyObject *self, PyObject *args)
 {   
-    MyCircle * py_scan = NULL;
+    /*
+    PyObject *pList;
+    PyObject *pItem;
+    Py_ssize_t n;
+    int i;
 
-    // Extract Python objects for map, scan, and position
-    if (!PyArg_ParseTuple(args, "O", &py_scan))
-    {        
-        return null_on_raise_argument_exception("breezyslam", "mysum");
-    }
-
-    // Check object types
-    if ( error_on_check_argument_type((PyObject *)py_scan, &myextensions_MyCircleType, 1,
-                "myextensions.MyCircle", "myextensions", "mysum")) {
-
+    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &pList)) {
+        PyErr_SetString(PyExc_TypeError, "parameter must be a list.");
         return NULL;
     }
+
+    n = PyList_Size(pList);
+    for (i=0; i<n; i++) {
+        pItem = PyList_GetItem(pList, i);
+        if(!PyInt_Check(pItem)) {
+            PyErr_SetString(PyExc_TypeError, "list items must be integers.");
+            return NULL;
+        }
+    }
+    */
 
     // Run C version and return Python integer
     return PyLong_FromLong(100);
@@ -185,8 +191,8 @@ static PyObject * mysum(PyObject *self, PyObject *args)
 static PyMethodDef module_methods[] = 
 {
     {"mysum", mysum, METH_VARARGS,
-     "mysum(lyst)\n"\
-     "Returns sum of numbers in list lyst."
+        "mysum(lyst)\n"\
+            "Returns sum of numbers in list lyst."
     },
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
