@@ -19,7 +19,6 @@
 
 #include <Python.h>
 #include <structmember.h>
-#include <math.h>
 #include "pyextension_utils.h"
 
 // MyCircle class ------------------------------------------------------------
@@ -88,7 +87,7 @@ static PyObject * MyCircle_move(MyCircle *self, PyObject *args, PyObject *kwds)
 
 static PyObject * MyCircle_area(MyCircle *self, PyObject *args, PyObject *kwds)
 {
-    return PyFloat_FromDouble(M_PI*self->r*self->r);
+    return PyFloat_FromDouble(3.14159265358979323846*self->r*self->r);
 }
 
 
