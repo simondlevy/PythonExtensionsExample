@@ -12,3 +12,7 @@ or Linux terminal window:
 <li>Linux, Python2: <b>sudo python setup.py install</b>
 <li>Linux, Python3: <b>sudo python3 setup.py install</b>
 </ul>
+
+This command will create a new module <b>myextensions</b> in your Python libraries folder.
+
+Once the install completes, you can test it out by running the script <b>testmyextensions.py</b>
