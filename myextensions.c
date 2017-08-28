@@ -179,11 +179,6 @@ static PyObject * mysum(PyObject *self, PyObject *args)
 
         PyObject * pItem = PyList_GetItem(pList, i);
 
-        if(!PyLong_Check(pItem)) {
-            PyErr_SetString(PyExc_TypeError, "list items must be integers.");
-            return NULL;
-        }
-
         sum += PyLong_AsLong(pItem);
     }
 
@@ -194,8 +189,9 @@ static PyObject * mysum(PyObject *self, PyObject *args)
 static PyMethodDef module_methods[] = 
 {
     {"mysum", mysum, METH_VARARGS,
-        "mysum(lyst)\n"\
-            "Returns sum of numbers in list lyst."
+     "mysum(lyst)\n"\
+     "Returns sum of numbers in list lyst. Caller is responsible for putting only "\
+     "integers into the list."
     },
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
