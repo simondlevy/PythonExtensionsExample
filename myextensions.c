@@ -163,17 +163,17 @@ static PyTypeObject myextensions_MyCircleType =
 
 static PyObject * mysum(PyObject *self, PyObject *args)
 {   
-    /*
-    PyObject *pList;
-    PyObject *pItem;
-    Py_ssize_t n;
-    int i;
+    PyObject *pList = NULL;
 
     if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &pList)) {
         PyErr_SetString(PyExc_TypeError, "parameter must be a list.");
         return NULL;
     }
 
+    /*
+    Py_ssize_t n;
+    int i;
+    PyObject *pItem;
     n = PyList_Size(pList);
     for (i=0; i<n; i++) {
         pItem = PyList_GetItem(pList, i);
