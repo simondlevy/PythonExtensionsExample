@@ -73,10 +73,9 @@ static PyObject * MyCircle_str(MyCircle *self)
 
 static PyObject * MyCircle_move(MyCircle *self, PyObject *args, PyObject *kwds)
 {
-    static char* argnames[] = {"dx", "dy", NULL};
     double dx = 0, dy = 0;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds,"dd", argnames, dx, dy)) {
+    if (!PyArg_ParseTuple(args, "dd", &dx, &dy)) {
         return null_on_raise_argument_exception("MyCircle", "move");
     }
 
